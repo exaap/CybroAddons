@@ -15,10 +15,10 @@ class DeadLineReminder(models.Model):
     def _cron_deadline_reminder(self):
         su_id = self.env['res.partner'].browse(SUPERUSER_ID)
         for task in self.env['project.task'].search([('date_deadline', '!=', None),
-                                                     ('task_reminder', '=', True), ('user_id', '!=', None)]):
+                                                     ('task_reminder', '=', True), ('user_id', '!=', None), ('stage_id.id', 'not in', [18,22])]):
             reminder_date = task.date_deadline
             today = datetime.now().date()
-            if reminder_date == today and task:
+            if reminder_date <= today and task:
                 template_id = self.env['ir.model.data'].get_object_reference(
                                                       'task_deadline_reminder',
                                                       'email_template_edi_deadline_reminder')[1]
